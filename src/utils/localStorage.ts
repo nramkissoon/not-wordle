@@ -11,3 +11,22 @@ export function lsSetTheme(theme: Themes) {
   console.debug(`Setting theme to ${theme} in local storage...`);
   localStorage.setItem("theme", theme);
 }
+
+export function lsGetGameMode() {
+  console.debug("Getting game mode from local storage...");
+  return localStorage.getItem("gamemode") as "normal" | "hard";
+}
+
+export function lsSetGameMode(mode: "hard" | "normal") {
+  console.debug(`Setting game mode to ${mode} in local storage...`);
+  localStorage.setItem("gamemode", mode);
+}
+
+export function lsGetGameState() {
+  console.debug("Getting game state from local storage...");
+  return localStorage.getItem("gamestate");
+}
+
+export function lsSetGameState(state: string) {
+  localStorage.setItem("gamestate", state);
+}
