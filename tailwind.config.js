@@ -35,8 +35,9 @@ export default {
   },
   plugins: [
     plugin(function ({ addVariant }) {
-      addVariant("high-contrast", "&:high-contrast");
-      addVariant("high-contrast-dark", "&:high-contrast-dark");
+      addVariant("high-contrast", "&:is(.high-contrast *)");
+      addVariant("high-contrast-dark", "&:is(.high-contrast-dark *)");
+      addVariant("light", "&:is(.light *)");
     }),
   ],
 };
