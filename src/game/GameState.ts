@@ -37,6 +37,7 @@ export class GameState {
     this.gameMode = lsGetGameMode();
     this._save();
   }
+
   guess(chars: string[]) {
     console.log(chars);
   }
