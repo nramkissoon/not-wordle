@@ -14,7 +14,7 @@ export function lsSetTheme(theme: Themes) {
 
 export function lsGetGameMode() {
   console.debug("Getting game mode from local storage...");
-  return localStorage.getItem("gamemode") as "normal" | "hard";
+  return (localStorage.getItem("gamemode") as "normal" | "hard") ?? "normal";
 }
 
 export function lsSetGameMode(mode: "hard" | "normal") {
