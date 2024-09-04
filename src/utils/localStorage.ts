@@ -30,3 +30,13 @@ export function lsGetGameState() {
 export function lsSetGameState(state: string) {
   localStorage.setItem("gamestate", state);
 }
+
+export function lsGetOnscreenKeyboardInputOnlySetting() {
+  return localStorage.getItem("onscreenkeyboardonly");
+}
+
+export function lsSetOnscreenKeyboardInputOnlySetting(
+  setting: "false" | "true"
+) {
+  localStorage.setItem("onscreenkeyboardonly", setting);
+}
