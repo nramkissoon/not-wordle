@@ -15,7 +15,7 @@ type GameStateContext = {
   answer: string;
   gameMode: "hard" | "normal";
   toggleGameMode: () => void;
-  checkGuess: (guess: string) => void;
+  commitGuess: (guess: string) => void;
   saveGameState: () => void;
   getNextEmptyRow: () => number | null;
 };
@@ -26,7 +26,7 @@ export const GameStateContext = createContext<GameStateContext>({
   answer: "",
   gameMode: "normal",
   toggleGameMode: () => {},
-  checkGuess: () => {},
+  commitGuess: () => {},
   saveGameState: () => {},
   getNextEmptyRow: () => null,
 });
@@ -152,20 +152,39 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     return save(gameState);
   }
 
-  function checkGuess(guess: string) {
-    return guess === gameState.answer;
-  }
-
   function getNextEmptyRow() {
     const { board } = gameState;
-    if (isGameDone(board)) return null;
     let i = 0;
     while (i < board.length) {
       if (isRowEmpty(board, i)) return i;
       i++;
     }
 
-    return null;
+    return i;
+  }
+
+  function commitGuess(guess: string) {
+    const { board, answer } = gameState;
+    const lettersInAnswer = new Set(answer.split(""));
+    const boardRowIndex = getNextEmptyRow();
+    const row = Array.from(board[boardRowIndex]);
+    if (isGameDone(board)) return;
+    let i = 0;
+    while (i < guess.length) {
+      const guessChar = guess.charAt(i);
+      const ansChar = answer.charAt(i);
+      // correct
+      if (guessChar === ansChar) {
+        row[i] = { state: "correct", value: guessChar };
+      } else if (lettersInAnswer.has(guessChar)) {
+        row[i] = { state: "present", value: guessChar };
+      } else if (!lettersInAnswer.has(guessChar)) {
+        row[i] = { state: "absent", value: guessChar };
+      }
+      i++;
+    }
+    board[boardRowIndex] = row;
+    setGameState({ ...gameState, board });
   }
 
   return (
@@ -174,7 +193,7 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
         ...gameState,
         toggleGameMode,
         saveGameState,
-        checkGuess,
+        commitGuess,
         getNextEmptyRow,
       }}
     >
