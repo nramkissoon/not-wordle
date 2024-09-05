@@ -7,15 +7,23 @@ import {
 } from "@/utils/localStorage";
 import { createContext, ReactNode, useState } from "react";
 
-export type TileState = "correct" | "present" | "absent" | "empty";
+export type TileState =
+  | "correct"
+  | "present"
+  | "absent"
+  | "empty"
+  | "unchecked";
 
 type GameStateContext = {
   board: { state: TileState; value: string | null }[][];
   date: string;
   answer: string;
   gameMode: "hard" | "normal";
+  workingRow: number;
   toggleGameMode: () => void;
-  commitGuess: (guess: string) => void;
+  commitGuess: () => void;
+  enterLetter: (letter: string) => void;
+  deleteLetter: () => void;
   saveGameState: () => void;
   getNextEmptyRow: () => number | null;
 };
@@ -25,8 +33,11 @@ export const GameStateContext = createContext<GameStateContext>({
   date: "",
   answer: "",
   gameMode: "normal",
+  workingRow: 0,
   toggleGameMode: () => {},
   commitGuess: () => {},
+  enterLetter: () => {},
+  deleteLetter: () => {},
   saveGameState: () => {},
   getNextEmptyRow: () => null,
 });
@@ -37,7 +48,7 @@ type GameStateProviderProps = {
 
 type GameState = Pick<
   GameStateContext,
-  "board" | "answer" | "gameMode" | "date"
+  "board" | "answer" | "gameMode" | "date" | "workingRow"
 >;
 
 type Board = GameStateContext["board"];
@@ -73,6 +84,17 @@ function isRowEmpty(board: Board, index: number) {
   return true;
 }
 
+function isRowUnchecked(board: Board, index: number) {
+  if (index < 0 || index > board.length - 1)
+    throw new Error("isRowEmpty index out of bounds");
+
+  for (const tile of board[index]) {
+    if (tile.state !== "empty" && tile.state !== "unchecked") return false;
+  }
+
+  return true;
+}
+
 function rowIsAnswer(board: Board, index: number) {
   if (index < 0 || index > board.length - 1)
     throw new Error("rowIsAnswer index out of bounds");
@@ -88,7 +110,7 @@ function isGameDone(board: Board) {
   let i = 0;
   while (i < board.length) {
     if (rowIsAnswer(board, i)) return true;
-    if (isRowEmpty(board, i)) return false;
+    if (isRowEmpty(board, i) || isRowUnchecked(board, i)) return false;
     i++;
   }
   // out of guesses
@@ -123,10 +145,44 @@ function loadOrInitGameState(): GameState {
       date: new Date().toDateString(),
       answer: getWordForToday(),
       gameMode: lsGetGameMode(),
+      workingRow: 0,
     };
   }
 
   return loaded;
+}
+
+export function enter(letter: string, board: Board, workingRow: number) {
+  if (workingRow < 0 || workingRow > board.length - 1) return;
+  let i = 0;
+
+  // iterate until we find empty cell
+  while (
+    i < board[workingRow].length &&
+    board[workingRow][i].state === "unchecked"
+  ) {
+    i++;
+  }
+
+  if (i < board[workingRow].length)
+    board[workingRow][i] = { state: "unchecked", value: letter };
+}
+
+export function del(board: Board, workingRow: number) {
+  if (workingRow < 0 || workingRow > board.length - 1) return;
+  let i = 0;
+
+  // iterate until we find empty cell
+  while (
+    i < board[workingRow].length &&
+    board[workingRow][i].state === "unchecked"
+  ) {
+    i++;
+  }
+
+  // go back one
+  i--;
+  if (i >= 0) board[workingRow][i] = { state: "empty", value: "" };
 }
 
 export const GameStateProvider: React.FC<GameStateProviderProps> = ({
@@ -135,16 +191,20 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   // TODO: may need to split game state object into multiple states
   const [gameState, setGameState] = useState<GameState>(loadOrInitGameState());
 
+  function saveAndSetGameState(state: GameState) {
+    return setGameState(save(state));
+  }
+
   function toggleGameMode() {
     if (!canChangeMode(gameState.board)) return;
     const mode = gameState.gameMode;
     if (mode === "hard") {
       lsSetGameMode("normal");
-      return setGameState(save({ ...gameState, gameMode: "normal" }));
+      return saveAndSetGameState({ ...gameState, gameMode: "normal" });
     }
     if (mode === "normal") {
       lsSetGameMode("hard");
-      return setGameState(save({ ...gameState, gameMode: "hard" }));
+      return saveAndSetGameState({ ...gameState, gameMode: "hard" });
     }
   }
 
@@ -163,17 +223,19 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     return i;
   }
 
-  function commitGuess(guess: string) {
-    const { board, answer } = gameState;
+  function commitGuess() {
+    const { board, answer, workingRow } = gameState;
     const lettersInAnswer = new Set(answer.split(""));
-    const boardRowIndex = getNextEmptyRow();
+    const boardRowIndex = workingRow;
     const row = Array.from(board[boardRowIndex]);
     if (isGameDone(board)) return;
+    // check row is full
+    if (row.filter((cell) => cell.state === "empty")) return;
     let i = 0;
+    const guess = row.map((cell) => cell.value).join("");
     while (i < guess.length) {
       const guessChar = guess.charAt(i);
       const ansChar = answer.charAt(i);
-      // correct
       if (guessChar === ansChar) {
         row[i] = { state: "correct", value: guessChar };
       } else if (lettersInAnswer.has(guessChar)) {
@@ -184,7 +246,19 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
       i++;
     }
     board[boardRowIndex] = row;
-    setGameState({ ...gameState, board });
+    saveAndSetGameState({ ...gameState, board, workingRow: workingRow + 1 });
+  }
+
+  function enterLetter(letter: string) {
+    const { board, workingRow } = gameState;
+    enter(letter, board, workingRow);
+    saveAndSetGameState({ ...gameState, board });
+  }
+
+  function deleteLetter() {
+    const { board, workingRow } = gameState;
+    del(board, workingRow);
+    saveAndSetGameState({ ...gameState, board });
   }
 
   return (
@@ -195,6 +269,8 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
         saveGameState,
         commitGuess,
         getNextEmptyRow,
+        enterLetter,
+        deleteLetter,
       }}
     >
       {children}
