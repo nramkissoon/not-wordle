@@ -20,14 +20,17 @@ export const OffscreenKeyboard: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const onKeyDown = (key: string) => {
-    console.log("OffscreenKeyboard_onKeyDown:", key);
-    if (key === "Enter") commitGuess();
-    if (key === "Backspace") del();
-    if (key.match(/^[a-zA-Z]+$/)) enter(key);
+    if (key === "Enter") return commitGuess();
+    if (key === "Backspace") return del();
+    if (key.match(/^[a-zA-Z]+$/) && key.length === 1) return enter(key);
   };
 
   return (
-    <div tabIndex={-1} onKeyDown={(e) => onKeyDown(e.key)}>
+    <div
+      tabIndex={-1}
+      className="min-h-screen"
+      onKeyDown={(e) => onKeyDown(e.key)}
+    >
       {children}
     </div>
   );

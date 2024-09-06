@@ -1,6 +1,6 @@
-import "./App.css";
 import { GameBoard } from "./components/GameBoard";
 import { GameStateProvider } from "./components/GameStateProvider";
+import { GameStateProviderTestComponent } from "./components/GameStateProviderTest";
 import { Header } from "./components/Header";
 import { KeyBoard } from "./components/Keyboard";
 import { OffscreenKeyboard } from "./components/OffscreenKeyboard";
@@ -20,6 +20,7 @@ function App() {
             <Header />
             <GameBoard />
             <KeyBoard />
+            <GameStateProviderTestComponent />
           </OffscreenKeyboard>
         </GameStateProvider>
       </OnscreenKeyboardInputOnlyProvider>

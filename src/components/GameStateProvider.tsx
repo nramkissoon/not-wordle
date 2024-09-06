@@ -6,6 +6,9 @@ import {
   lsSetGameState,
 } from "@/utils/localStorage";
 import { createContext, ReactNode, useState } from "react";
+import data from "../assets/words.json";
+
+const words = new Set<string>(data.words);
 
 export type TileState =
   | "correct"
@@ -153,6 +156,7 @@ export function loadOrInitGameState(): GameState {
 }
 
 export function enter(letter: string, board: Board, workingRow: number) {
+  if (isGameDone(board)) return;
   if (workingRow < 0 || workingRow > board.length - 1) return;
   let i = 0;
 
@@ -184,6 +188,12 @@ export function del(board: Board, workingRow: number) {
   i--;
   if (i >= 0) board[workingRow][i] = { state: "empty", value: "" };
 }
+
+export type CommitGuessResult =
+  | "OK"
+  | "GAME_FINISHED"
+  | "NOT_ENOUGH_LETTERS"
+  | "GUESS_NOT_WORD";
 
 export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   children,
@@ -223,30 +233,43 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     return i;
   }
 
-  function commitGuess() {
+  function commitGuess(): CommitGuessResult {
     const { board, answer, workingRow } = gameState;
-    const lettersInAnswer = new Set(answer.split(""));
+    const lettersInAnswer: { [letter: string]: number } = {};
+    for (const letter of answer.split("")) {
+      if (!lettersInAnswer[letter]) {
+        lettersInAnswer[letter] = 1;
+      } else {
+        lettersInAnswer[letter]++;
+      }
+    }
+    console.log(lettersInAnswer);
+
     const boardRowIndex = workingRow;
     const row = Array.from(board[boardRowIndex]);
-    if (isGameDone(board)) return;
+    if (isGameDone(board)) return "GAME_FINISHED";
     // check row is full
-    if (row.filter((cell) => cell.state === "empty")) return;
+    if (row.find((cell) => cell.state === "empty")) return "NOT_ENOUGH_LETTERS";
     let i = 0;
     const guess = row.map((cell) => cell.value).join("");
+    if (!words.has(guess)) return "GUESS_NOT_WORD";
     while (i < guess.length) {
       const guessChar = guess.charAt(i);
       const ansChar = answer.charAt(i);
       if (guessChar === ansChar) {
         row[i] = { state: "correct", value: guessChar };
-      } else if (lettersInAnswer.has(guessChar)) {
+        lettersInAnswer[guessChar]--;
+      } else if (lettersInAnswer[guessChar] > 0) {
         row[i] = { state: "present", value: guessChar };
-      } else if (!lettersInAnswer.has(guessChar)) {
+        lettersInAnswer[guessChar]--;
+      } else if (!lettersInAnswer[guessChar]) {
         row[i] = { state: "absent", value: guessChar };
       }
       i++;
     }
     board[boardRowIndex] = row;
     saveAndSetGameState({ ...gameState, board, workingRow: workingRow + 1 });
+    return "OK";
   }
 
   function enterLetter(letter: string) {
