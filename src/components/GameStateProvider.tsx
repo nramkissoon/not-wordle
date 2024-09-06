@@ -53,7 +53,7 @@ type GameState = Pick<
 
 type Board = GameStateContext["board"];
 
-function initNewBoard(): Board {
+export function initNewBoard(): Board {
   const board = new Array(6);
   for (let i = 0; i < board.length; i++) {
     board[i] = new Array(5);
@@ -65,7 +65,7 @@ function initNewBoard(): Board {
   return board;
 }
 
-function isGameInProgress(board: Board) {
+export function isGameInProgress(board: Board) {
   for (const tile of board[0]) {
     if (tile.state !== "empty") return true;
   }
@@ -73,7 +73,7 @@ function isGameInProgress(board: Board) {
   return false;
 }
 
-function isRowEmpty(board: Board, index: number) {
+export function isRowEmpty(board: Board, index: number) {
   if (index < 0 || index > board.length - 1)
     throw new Error("isRowEmpty index out of bounds");
 
@@ -84,7 +84,7 @@ function isRowEmpty(board: Board, index: number) {
   return true;
 }
 
-function isRowUnchecked(board: Board, index: number) {
+export function isRowUnchecked(board: Board, index: number) {
   if (index < 0 || index > board.length - 1)
     throw new Error("isRowEmpty index out of bounds");
 
@@ -95,7 +95,7 @@ function isRowUnchecked(board: Board, index: number) {
   return true;
 }
 
-function rowIsAnswer(board: Board, index: number) {
+export function rowIsAnswer(board: Board, index: number) {
   if (index < 0 || index > board.length - 1)
     throw new Error("rowIsAnswer index out of bounds");
 
@@ -106,7 +106,7 @@ function rowIsAnswer(board: Board, index: number) {
   return true;
 }
 
-function isGameDone(board: Board) {
+export function isGameDone(board: Board) {
   let i = 0;
   while (i < board.length) {
     if (rowIsAnswer(board, i)) return true;
@@ -117,16 +117,16 @@ function isGameDone(board: Board) {
   return true;
 }
 
-function canChangeMode(board: Board) {
+export function canChangeMode(board: Board) {
   return !isGameDone(board) && !isGameInProgress(board);
 }
 
-function save(state: GameState) {
+export function save(state: GameState) {
   lsSetGameState(JSON.stringify(state));
   return state;
 }
 
-function load() {
+export function load() {
   const state = lsGetGameState();
   if (!state) return null;
   const deserialized = JSON.parse(state) as GameState;
@@ -137,7 +137,7 @@ function load() {
   return deserialized;
 }
 
-function loadOrInitGameState(): GameState {
+export function loadOrInitGameState(): GameState {
   const loaded = load();
   if (!loaded) {
     return {
