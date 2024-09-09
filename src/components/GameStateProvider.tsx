@@ -17,8 +17,13 @@ export type TileState =
   | "empty"
   | "unchecked";
 
+export interface TileProps {
+  state: TileState;
+  value: string | null;
+}
+
 type GameStateContext = {
-  board: { state: TileState; value: string | null }[][];
+  board: TileProps[][];
   date: string;
   answer: string;
   gameMode: "hard" | "normal";
@@ -243,12 +248,9 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
         lettersInAnswer[letter]++;
       }
     }
-    console.log(lettersInAnswer);
-
     const boardRowIndex = workingRow;
     const row = Array.from(board[boardRowIndex]);
     if (isGameDone(board)) return "GAME_FINISHED";
-    // check row is full
     if (row.find((cell) => cell.state === "empty")) return "NOT_ENOUGH_LETTERS";
     let i = 0;
     const guess = row.map((cell) => cell.value).join("");
