@@ -19,6 +19,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        wordleBlack: "#121213",
         correct: {
           light: "#6aaa64",
           dark: "#538d4e",

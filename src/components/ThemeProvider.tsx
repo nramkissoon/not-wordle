@@ -67,7 +67,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     <ThemeContext.Provider
       value={{ theme, toggleColorMode, toggleHighContrast }}
     >
-      <div className={theme}>{children}</div>
+      <div className={theme}>
+        <div className="dark:bg-wordleBlack high-contrast-dark:bg-wordleBlack light:bg-white high-contrast:bg-white dark:text-white high-contrast-dark:text-white light:text-wordleBlack high-contrast:text-wordleBlack">
+          {children}
+        </div>
+      </div>
     </ThemeContext.Provider>
   );
 };
