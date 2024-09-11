@@ -39,25 +39,43 @@ const tileBackgroundMap = {
 // TODO
 const emptyTileBorderStyles =
   "border-2 dark:border-absent-dark high-contrast-dark:border-absent-hc_dark";
-// TODO
-const filledTileBorderStyles = "border-2";
+
+// no border for filled tiles
+const filledTileBorderStyles = "";
+
+const uncheckedTileBorderStyles =
+  "border-2 dark:border-absent-dark high-contrast-dark:border-absent-hc_dark";
 
 const tileBorderMap = {
   empty: emptyTileBorderStyles,
-  filled: filledTileBorderStyles,
+  unchecked: uncheckedTileBorderStyles,
+  correct: filledTileBorderStyles,
+  present: filledTileBorderStyles,
+  absent: filledTileBorderStyles,
+};
+
+const tileTextColorMap = {
+  empty:
+    "dark:text-white light:text-wordleBlack high-contrast:text-wordleBlack high-contrast-dark:text-white",
+  unchecked:
+    "dark:text-white light:text-wordleBlack high-contrast:text-wordleBlack high-contrast-dark:text-white",
+  correct: "text-white",
+  present: "text-white",
+  absent: "text-white",
 };
 
 function Tile({ state, value }: TileProps) {
   const bg = tileBackgroundMap[state];
-  const border = tileBorderMap[value === "" ? "empty" : "filled"];
+  const border = tileBorderMap[state];
+  const textColor = tileTextColorMap[state];
 
   return (
     <div
       className={clsx(
         bg,
         border,
-        "w-10 h-10 flex items-center justify-center text-xl font-extrabold",
-        "dark:text-white light:text-black high-contrast:text-black high-contrast-dark:text-white"
+        textColor,
+        "w-14 h-14 flex items-center justify-center text-3xl font-bold"
       )}
     >
       {value?.toLocaleUpperCase() ?? ""}

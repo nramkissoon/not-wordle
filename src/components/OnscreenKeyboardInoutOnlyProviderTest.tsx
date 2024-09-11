@@ -3,10 +3,10 @@ import { OnscreenKeyboardInputOnlyContext } from "./OnscreenKeyboardInputOnlyPro
 
 export function OnscreenKeyBoardToggleTest() {
   const { toggle, setting } = useContext(OnscreenKeyboardInputOnlyContext);
-  console.log("OnscreenKeyboardInputOnly:", setting);
   return (
-    <>
+    <div>
       <button onClick={() => toggle()}>Toggle Onscreen Keyboard Only</button>
-    </>
+      <div>OnscreenKeyBoardOnly setting -&gt; {setting}</div>
+    </div>
   );
 }

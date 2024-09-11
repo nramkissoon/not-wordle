@@ -68,7 +68,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       value={{ theme, toggleColorMode, toggleHighContrast }}
     >
       <div className={theme}>
-        <div className="dark:bg-wordleBlack high-contrast-dark:bg-wordleBlack light:bg-white high-contrast:bg-white dark:text-white high-contrast-dark:text-white light:text-wordleBlack high-contrast:text-wordleBlack">
+        <div className="dark:bg-wordleBlack high-contrast-dark:bg-wordleBlack light:bg-white high-contrast:bg-white dark:text-white high-contrast-dark:text-white light:text-wordleBlack high-contrast:text-wordleBlack flex flex-col items-center">
           {children}
         </div>
       </div>
