@@ -75,7 +75,7 @@ function Tile({ state, value }: TileProps) {
         bg,
         border,
         textColor,
-        "w-14 h-14 flex items-center justify-center text-3xl font-bold"
+        "w-16 h-16 flex items-center justify-center text-3xl font-bold"
       )}
     >
       {value?.toLocaleUpperCase() ?? ""}
