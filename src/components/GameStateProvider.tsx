@@ -29,7 +29,7 @@ type GameStateContext = {
   gameMode: "hard" | "normal";
   workingRow: number;
   toggleGameMode: () => void;
-  commitGuess: () => void;
+  commitGuess: () => CommitGuessResult;
   enterLetter: (letter: string) => void;
   deleteLetter: () => void;
   saveGameState: () => void;
@@ -43,7 +43,7 @@ export const GameStateContext = createContext<GameStateContext>({
   gameMode: "normal",
   workingRow: 0,
   toggleGameMode: () => {},
-  commitGuess: () => {},
+  commitGuess: () => "OK",
   enterLetter: () => {},
   deleteLetter: () => {},
   saveGameState: () => {},

@@ -17,8 +17,7 @@ export function KeyBoard() {
         <AlphaKey letter="o" />
         <AlphaKey letter="p" />
       </KeyboardRow>
-      <KeyboardRow>
-        <div className="w-[16px]" />
+      <KeyboardRow className="items-center justify-center">
         <AlphaKey letter="a" />
         <AlphaKey letter="s" />
         <AlphaKey letter="d" />
@@ -28,7 +27,6 @@ export function KeyBoard() {
         <AlphaKey letter="j" />
         <AlphaKey letter="k" />
         <AlphaKey letter="l" />
-        <div className="w-[16px]" />
       </KeyboardRow>
       <KeyboardRow>
         <ActionKey type="enter" />
@@ -45,8 +43,14 @@ export function KeyBoard() {
   );
 }
 
-function KeyboardRow({ children }: { children: ReactNode }) {
-  return <div className="flex gap-[6px]">{children}</div>;
+function KeyboardRow({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={clsx("flex gap-[6px]", className)}>{children}</div>;
 }
 
 const keyBackgroundStyles =
