@@ -8,7 +8,7 @@ export function GameBoard() {
   return (
     <div className="flex flex-col gap-1">
       {board.map((_, i) => (
-        <TileRow row={i} />
+        <TileRow row={i} key={i} />
       ))}
     </div>
   );
@@ -88,8 +88,8 @@ function TileRow({ row }: { row: number }) {
   const tiles = board[row];
   return (
     <div className="flex gap-1">
-      {tiles.map((tile) => (
-        <Tile {...tile} />
+      {tiles.map((tile, i) => (
+        <Tile {...tile} key={i} />
       ))}
     </div>
   );
