@@ -93,7 +93,7 @@ function ActionKey({ type }: { type: "enter" | "backspace" }) {
       onClick={act}
       className={clsx(
         keyBackgroundStyles,
-        "w-11 px-4 flex items-center justify-center text-xl font-bold py-3.5 rounded-sm"
+        "w-11 px-4 flex items-center justify-center text-xs font-bold py-3.5 rounded-sm flex-grow"
       )}
     >
       {displayText}

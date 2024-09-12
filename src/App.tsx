@@ -14,11 +14,13 @@ function App() {
       <OnscreenKeyboardInputOnlyProvider>
         <GameStateProvider>
           <OffscreenKeyboard>
-            <OnscreenKeyBoardToggleTest />
-            <ThemeToggleTest />
             <Header />
-            <GameBoard />
-            <KeyBoard />
+            <main className="flex flex-col items-center gap-6">
+              <OnscreenKeyBoardToggleTest />
+              <ThemeToggleTest />
+              <GameBoard />
+              <KeyBoard />
+            </main>
           </OffscreenKeyboard>
         </GameStateProvider>
       </OnscreenKeyboardInputOnlyProvider>
