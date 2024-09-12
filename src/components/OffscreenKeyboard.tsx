@@ -28,7 +28,7 @@ export const OffscreenKeyboard: React.FC<{ children: React.ReactNode }> = ({
   return (
     <div
       tabIndex={-1}
-      className="min-h-screen"
+      className="min-h-screen focus:border-none"
       onKeyDown={(e) => onKeyDown(e.key)}
     >
       {children}

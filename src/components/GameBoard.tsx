@@ -38,13 +38,13 @@ const tileBackgroundMap = {
 
 // TODO
 const emptyTileBorderStyles =
-  "border-2 dark:border-absent-dark high-contrast-dark:border-absent-hc_dark";
+  "border-2 dark:border-absent-dark high-contrast-dark:border-absent-hc_dark light:border-keyboard-light high-contrast:border-keyboard-hc";
 
 // no border for filled tiles
 const filledTileBorderStyles = "";
 
 const uncheckedTileBorderStyles =
-  "border-2 dark:border-absent-dark high-contrast-dark:border-absent-hc_dark";
+  "border-2 dark:border-absent-light/80 high-contrast-dark:border-absent-hc/80 light:border-absent-light high-contrast:border-absent-hc";
 
 const tileBorderMap = {
   empty: emptyTileBorderStyles,

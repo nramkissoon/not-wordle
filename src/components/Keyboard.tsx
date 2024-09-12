@@ -83,10 +83,13 @@ function ActionKey({ type }: { type: "enter" | "backspace" }) {
   function act() {
     // TODO error handling and animations
     if (type === "backspace") deleteLetter();
-    if (type === "enter") commitGuess();
+    if (type === "enter") {
+      const commitResult = commitGuess();
+      console.log(commitResult);
+    }
   }
 
-  const displayText = type === "backspace" ? "<-" : "ENTER";
+  const displayText = type === "backspace" ? "DEL" : "ENTER";
 
   return (
     <button
