@@ -54,12 +54,12 @@ type GameStateProviderProps = {
   children: ReactNode;
 };
 
-type GameState = Pick<
+export type GameState = Pick<
   GameStateContext,
   "board" | "answer" | "gameMode" | "date" | "workingRow"
 >;
 
-type Board = GameStateContext["board"];
+export type Board = GameStateContext["board"];
 
 export function initNewBoard(): Board {
   const board = new Array(6);

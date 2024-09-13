@@ -1,5 +1,5 @@
 import { ReactNode, useContext } from "react";
-import { GameStateContext } from "./GameStateProvider";
+import { Board, GameStateContext } from "./GameStateProvider";
 import clsx from "clsx";
 
 export function KeyBoard() {
@@ -53,11 +53,49 @@ function KeyboardRow({
   return <div className={clsx("flex gap-[6px]", className)}>{children}</div>;
 }
 
-const keyBackgroundStyles =
+const keyDefaultBackgroundStyles =
   "light:bg-keyboard-light dark:bg-keyboard-dark high-contrast:bg-keyboard-hc high-contrast-dark:bg-keyboard-hc_dark";
 
+function getKeyBackgroundStyle(letter: string, board: Board) {
+  // search the board to see if letter is used, check in reverse row order to get most recent letter state
+  let backgroundStyles = keyDefaultBackgroundStyles;
+  for (let i = board.length - 1; i >= 0; i--) {
+    for (let j = 0; j < board[i].length; j++) {
+      const cell = board[i][j];
+      if (
+        cell.value === letter &&
+        // don't change styles if already set
+        backgroundStyles === keyDefaultBackgroundStyles
+      ) {
+        // change background color depending on state
+        switch (cell.state) {
+          case "absent": {
+            backgroundStyles =
+              "high-contrast:bg-absent-hc high-contrast-dark:bg-absent-hc_dark light:bg-absent-light dark:bg-absent-dark";
+            break;
+          }
+          case "correct": {
+            backgroundStyles =
+              "high-contrast:bg-correct-hc light:bg-correct-light dark:bg-correct-dark high-contrast-dark:bg-correct-hc_dark";
+            break;
+          }
+          case "present": {
+            backgroundStyles =
+              "high-contrast:bg-present-hc high-contrast-dark:bg-present-hc_dark light:bg-present-light dark:bg-present-dark";
+            break;
+          }
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  return backgroundStyles;
+}
+
 function AlphaKey({ letter }: { letter: string }) {
-  const { enterLetter } = useContext(GameStateContext);
+  const { enterLetter, board } = useContext(GameStateContext);
 
   function enter() {
     // TODO: handle errors, animations
@@ -68,7 +106,7 @@ function AlphaKey({ letter }: { letter: string }) {
     <button
       onClick={enter}
       className={clsx(
-        keyBackgroundStyles,
+        getKeyBackgroundStyle(letter, board),
         "w-11 flex items-center justify-center text-xl font-bold py-3.5 rounded-sm"
       )}
     >
@@ -95,7 +133,7 @@ function ActionKey({ type }: { type: "enter" | "backspace" }) {
     <button
       onClick={act}
       className={clsx(
-        keyBackgroundStyles,
+        keyDefaultBackgroundStyles,
         "w-11 px-4 flex items-center justify-center text-xs font-bold py-3.5 rounded-sm flex-grow"
       )}
     >
