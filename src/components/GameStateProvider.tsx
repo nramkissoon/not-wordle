@@ -7,6 +7,7 @@ import {
 } from "@/utils/localStorage";
 import { createContext, ReactNode, useState } from "react";
 import data from "../assets/words.json";
+import { useToast } from "@/hooks/use-toast";
 
 const words = new Set<string>(data.words);
 
@@ -205,6 +206,7 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
 }) => {
   // TODO: may need to split game state object into multiple states
   const [gameState, setGameState] = useState<GameState>(loadOrInitGameState());
+  const { toast } = useToast();
 
   function saveAndSetGameState(state: GameState) {
     return setGameState(save(state));
@@ -251,10 +253,20 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     const boardRowIndex = workingRow;
     const row = Array.from(board[boardRowIndex]);
     if (isGameDone(board)) return "GAME_FINISHED";
-    if (row.find((cell) => cell.state === "empty")) return "NOT_ENOUGH_LETTERS";
+    if (row.find((cell) => cell.state === "empty")) {
+      toast({
+        title: "Not enough letters",
+      });
+      return "NOT_ENOUGH_LETTERS";
+    }
     let i = 0;
     const guess = row.map((cell) => cell.value).join("");
-    if (!words.has(guess)) return "GUESS_NOT_WORD";
+    if (!words.has(guess)) {
+      toast({
+        title: "Not in word list",
+      });
+      return "GUESS_NOT_WORD";
+    }
     while (i < guess.length) {
       const guessChar = guess.charAt(i);
       const ansChar = answer.charAt(i);

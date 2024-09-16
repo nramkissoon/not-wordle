@@ -5,6 +5,7 @@ import { KeyBoard } from "./components/Keyboard";
 import { OffscreenKeyboard } from "./components/OffscreenKeyboard";
 import { OnscreenKeyboardInputOnlyProvider } from "./components/OnscreenKeyboardInputOnlyProvider";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { Toaster } from "./shadcn/ui/toaster";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <OnscreenKeyboardInputOnlyProvider>
         <GameStateProvider>
           <OffscreenKeyboard>
+            <Toaster />
             <Header />
             <main className="flex flex-col items-center gap-6">
               <GameBoard />
