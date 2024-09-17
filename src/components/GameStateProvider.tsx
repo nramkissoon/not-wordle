@@ -76,7 +76,7 @@ export function initNewBoard(): Board {
 
 export function isGameInProgress(board: Board) {
   for (const tile of board[0]) {
-    if (tile.state !== "empty") return true;
+    if (tile.state !== "empty" && tile.state !== "unchecked") return true;
   }
 
   return false;

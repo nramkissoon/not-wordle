@@ -1,5 +1,5 @@
-/** @type {import('tailwindcss').Config} */
 const plugin = require("tailwindcss/plugin");
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -18,6 +18,9 @@ module.exports = {
       },
     },
     extend: {
+      fontSize: {
+        "2xs": "0.7rem",
+      },
       colors: {
         wordleBlack: "#121213",
         correct: {

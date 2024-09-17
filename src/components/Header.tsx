@@ -1,10 +1,21 @@
 import clsx from "clsx";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, ReactNode, useContext } from "react";
 import {
   TextAlignRightIcon,
   QuestionMarkCircledIcon,
   GearIcon,
 } from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shadcn/ui/dialog";
+import { Switch } from "@/shadcn/ui/switch";
+import { GameStateContext, canChangeMode } from "./GameStateProvider";
+import { ThemeContext } from "./ThemeProvider";
+import { OnscreenKeyboardInputOnlyContext } from "./OnscreenKeyboardInputOnlyProvider";
 
 const svgHW = 24;
 
@@ -28,9 +39,7 @@ export function Header() {
         <ToolbarButton>
           <QuestionMarkCircledIcon height={svgHW} width={svgHW} />
         </ToolbarButton>
-        <ToolbarButton>
-          <GearIcon height={svgHW} width={svgHW} />
-        </ToolbarButton>
+        <SettingsMenu />
       </div>
     </nav>
   );
@@ -47,5 +56,85 @@ function ToolbarButton({
     >
       {children}
     </button>
+  );
+}
+
+function SettingsMenu() {
+  const { gameMode, toggleGameMode, board } = useContext(GameStateContext);
+  const { theme, toggleColorMode, toggleHighContrast } =
+    useContext(ThemeContext);
+  const { setting, toggle } = useContext(OnscreenKeyboardInputOnlyContext);
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <ToolbarButton>
+          <GearIcon height={svgHW} width={svgHW} />
+        </ToolbarButton>
+      </DialogTrigger>
+      <DialogContent
+        className="max-w-lg rounded-md dark:bg-wordleBlack"
+        aria-describedby="settings"
+      >
+        <DialogHeader>
+          <DialogTitle className="text-sm text-center">SETTINGS</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center gap-4 w-full">
+          <div className="flex justify-between gap-2 items-center w-full">
+            <div className="font-light">
+              Hard Mode
+              <p className="text-2xs">
+                Any revealed hints must be used in subsequent guesses
+              </p>
+            </div>
+            <Switch
+              disabled={!canChangeMode(board)}
+              checked={gameMode === "hard"}
+              value={gameMode}
+              onCheckedChange={toggleGameMode}
+            />
+          </div>
+          <hr className="bg-white w-full" />
+          <div className="flex justify-between gap-2 items-center w-full">
+            <div className="font-light">Dark Theme</div>
+            <Switch
+              checked={theme === "dark" || theme === "high-contrast-dark"}
+              value={theme}
+              onCheckedChange={toggleColorMode}
+            />
+          </div>
+          <hr className="bg-white w-full" />
+          <div className="flex justify-between gap-2 items-center w-full">
+            <div className="font-light">
+              High Contrast Mode
+              <p className="text-2xs">
+                Contrast and colorblindness improvements
+              </p>
+            </div>
+            <Switch
+              checked={
+                theme === "high-contrast" || theme === "high-contrast-dark"
+              }
+              value={theme}
+              onCheckedChange={toggleHighContrast}
+            />
+          </div>
+          <hr className="bg-white w-full" />
+          <div className="flex justify-between gap-2 items-center w-full">
+            <div className="font-light">
+              Onscreen Keyboard Input Only
+              <p className="text-2xs">
+                Ignore key input except from the onscreen keyboard. Most helpful
+                for users using speech recognition or other assistive devices.
+              </p>
+            </div>
+            <Switch
+              value={setting}
+              checked={setting === "true"}
+              onCheckedChange={toggle}
+            />
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
