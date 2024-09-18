@@ -14,7 +14,7 @@ import {
 } from "@/shadcn/ui/dialog";
 import { Switch } from "@/shadcn/ui/switch";
 import { GameStateContext, canChangeMode } from "./GameStateProvider";
-import { ThemeContext } from "./ThemeProvider";
+import { ThemeContext, Themes } from "./ThemeProvider";
 import { OnscreenKeyboardInputOnlyContext } from "./OnscreenKeyboardInputOnlyProvider";
 
 const svgHW = 24;
@@ -59,11 +59,20 @@ function ToolbarButton({
   );
 }
 
+function getHrStyles(theme: Themes) {
+  if (theme === "dark") return "border-absent-dark w-full";
+  if (theme === "high-contrast-dark") return "border-absent-hc_dark w-full";
+  if (theme === "light") return "border-keyboard-light w-full";
+  if (theme === "high-contrast") return "border-keyboard-hc w-full";
+}
+
 function SettingsMenu() {
   const { gameMode, toggleGameMode, board } = useContext(GameStateContext);
   const { theme, toggleColorMode, toggleHighContrast } =
     useContext(ThemeContext);
   const { setting, toggle } = useContext(OnscreenKeyboardInputOnlyContext);
+  const hrStyles = getHrStyles(theme);
+  console.log(hrStyles);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -93,7 +102,7 @@ function SettingsMenu() {
               onCheckedChange={toggleGameMode}
             />
           </div>
-          <hr className="bg-white w-full" />
+          <hr className={hrStyles} />
           <div className="flex justify-between gap-2 items-center w-full">
             <div className="font-light">Dark Theme</div>
             <Switch
@@ -102,7 +111,7 @@ function SettingsMenu() {
               onCheckedChange={toggleColorMode}
             />
           </div>
-          <hr className="bg-white w-full" />
+          <hr className={hrStyles} />
           <div className="flex justify-between gap-2 items-center w-full">
             <div className="font-light">
               High Contrast Mode
@@ -118,7 +127,7 @@ function SettingsMenu() {
               onCheckedChange={toggleHighContrast}
             />
           </div>
-          <hr className="bg-white w-full" />
+          <hr className={hrStyles} />
           <div className="flex justify-between gap-2 items-center w-full">
             <div className="font-light">
               Onscreen Keyboard Input Only

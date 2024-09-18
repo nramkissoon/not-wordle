@@ -23,9 +23,7 @@ const presentTileBgStyles =
 const absentTileBgStyles =
   "high-contrast:bg-absent-hc high-contrast-dark:bg-absent-hc_dark light:bg-absent-light dark:bg-absent-dark";
 
-//TODO
 const emptyTileBgStyles = "";
-//TODO
 const uncheckedTileBgStyles = "";
 
 const tileBackgroundMap = {
@@ -36,7 +34,6 @@ const tileBackgroundMap = {
   unchecked: uncheckedTileBgStyles,
 };
 
-// TODO
 const emptyTileBorderStyles =
   "border-2 dark:border-absent-dark high-contrast-dark:border-absent-hc_dark light:border-keyboard-light high-contrast:border-keyboard-hc";
 
