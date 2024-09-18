@@ -24,7 +24,7 @@ export function Header() {
     <nav
       className={clsx(
         "flex items-center justify-between border-b px-3 mb-6 h-14",
-        "dark:border-absent-dark high-contrast-dark:border-absent-hc_dark light:border-absent-light high-contrast:border-absent-hc"
+        "dark:border-absent-dark high-contrast-dark:border-absent-hc_dark light:border-keyboard-light high-contrast:border-keyboard-hc"
       )}
     >
       <div className="text-md font-bold">NotWordle</div>
