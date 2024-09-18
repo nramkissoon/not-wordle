@@ -199,6 +199,7 @@ export type CommitGuessResult =
   | "OK"
   | "GAME_FINISHED"
   | "NOT_ENOUGH_LETTERS"
+  | "DOES_NOT_FOLLOW_HARD_MODE_RULE"
   | "GUESS_NOT_WORD";
 
 export const GameStateProvider: React.FC<GameStateProviderProps> = ({
@@ -240,6 +241,38 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     return i;
   }
 
+  function adheresToHardModeRule(): boolean {
+    const { board, workingRow } = gameState;
+    const guessRow = Array.from(board[workingRow]);
+
+    // iterate through rows 0 -> workingRow - 1 included to get correct guesses so far
+    let rowIdx = 0;
+    const correctGuesses: (TileProps | null)[] = new Array(
+      board[0].length
+    ).fill(null);
+    while (rowIdx < workingRow) {
+      for (let colIdx = 0; colIdx < board[rowIdx].length; colIdx++) {
+        const tile = board[rowIdx][colIdx];
+        if (tile.state === "correct") {
+          correctGuesses[colIdx] = tile;
+        }
+      }
+      rowIdx++;
+    }
+
+    // compare guess in working row with correct guesses
+    for (let i = 0; i < guessRow.length; i++) {
+      const guess = guessRow[i];
+      const correctGuess = correctGuesses[i];
+      if (correctGuess) {
+        // does not follow hard mode if guess does not use previously correct guess
+        if (correctGuess.value !== guess.value) return false;
+      }
+    }
+
+    return true;
+  }
+
   function commitGuess(): CommitGuessResult {
     const { board, answer, workingRow } = gameState;
     const lettersInAnswer: { [letter: string]: number } = {};
@@ -266,6 +299,12 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
         title: "Not in word list",
       });
       return "GUESS_NOT_WORD";
+    }
+    if (!adheresToHardModeRule()) {
+      toast({
+        title: "Must use previous correct guesses!",
+      });
+      return "DOES_NOT_FOLLOW_HARD_MODE_RULE";
     }
     while (i < guess.length) {
       const guessChar = guess.charAt(i);

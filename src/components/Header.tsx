@@ -72,7 +72,6 @@ function SettingsMenu() {
     useContext(ThemeContext);
   const { setting, toggle } = useContext(OnscreenKeyboardInputOnlyContext);
   const hrStyles = getHrStyles(theme);
-  console.log(hrStyles);
   return (
     <Dialog>
       <DialogTrigger asChild>
