@@ -61,7 +61,11 @@ const tileTextColorMap = {
   absent: "text-white",
 };
 
-function Tile({ state, value }: TileProps) {
+export function Tile({
+  state,
+  value,
+  className,
+}: TileProps & { className?: string }) {
   const bg = tileBackgroundMap[state];
   const border = tileBorderMap[state];
   const textColor = tileTextColorMap[state];
@@ -72,7 +76,8 @@ function Tile({ state, value }: TileProps) {
         bg,
         border,
         textColor,
-        "w-16 h-16 flex items-center justify-center text-3xl font-bold"
+        "w-16 h-16 flex items-center justify-center text-3xl font-bold",
+        className
       )}
     >
       {value?.toLocaleUpperCase() ?? ""}
