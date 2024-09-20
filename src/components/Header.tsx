@@ -29,21 +29,23 @@ export function Header() {
   return (
     <nav
       className={clsx(
-        "flex items-center justify-between border-b px-3 mb-6 h-14",
+        "flex items-center justify-center border-b px-3 mb-6 h-14",
         "dark:border-absent-dark high-contrast-dark:border-absent-hc_dark light:border-keyboard-light high-contrast:border-keyboard-hc"
       )}
     >
-      <div className="text-md font-bold">NotWordle</div>
-      <div className="flex h-full">
-        <ToolbarButton>
-          <TextAlignRightIcon
-            height={svgHW}
-            width={svgHW}
-            transform="rotate(90)"
-          />
-        </ToolbarButton>
-        <RulesDialog />
-        <SettingsMenu />
+      <div className="max-w-2xl flex justify-between items-center w-full h-full">
+        <div className="text-md font-bold">NotWordle</div>
+        <div className="flex h-full">
+          <ToolbarButton>
+            <TextAlignRightIcon
+              height={svgHW}
+              width={svgHW}
+              transform="rotate(90)"
+            />
+          </ToolbarButton>
+          <RulesDialog />
+          <SettingsMenu />
+        </div>
       </div>
     </nav>
   );
